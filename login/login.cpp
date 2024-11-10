@@ -13,7 +13,7 @@ bool login()
 
     while (intentos < 3 && !autenticado)
     {
-        cout << "==========================================\n";
+        cout << "\n==========================================\n";
         cout << "       BIENVENIDO AL SISTEMA RAPPI      \n";
         cout << "==========================================\n";
         cout << "=> Por favor, ingrese sus credenciales\n";
@@ -36,13 +36,13 @@ bool login()
 
         if (autenticado)
         {
-            cout << "\n=> Autenticacion exitosa. Ingresando al sistema...\n\n";
+            cout << "\n=> Autenticacion exitosa. Ingresando al sistema...\n";
             return true;
         }
         else
         {
             intentos++;
-            cout << "\n=> Credenciales incorrectas. Intento " << intentos << " / 3\n\n";
+            cout << "\n=> Credenciales incorrectas. Intento " << intentos << " / 3\n";
         }
     }
 

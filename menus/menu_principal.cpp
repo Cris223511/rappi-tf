@@ -11,14 +11,14 @@ void menuPrincipal()
     int opcion;
     do
     {
-        cout << "\n================================\n";
-        cout << "    SISTEMA DE GESTION RAPPI  \n";
-        cout << "================================\n";
-        cout << "[1]. Gestion de Inventarios\n";
-        cout << "[2]. Almacenamiento de Pedidos\n";
-        cout << "[3]. Historial de Reportes\n";
+        cout << "\n==========================================\n";
+        cout << "         SISTEMA DE GESTION RAPPI\n";
+        cout << "==========================================\n";
+        cout << "[1]. Gestion de inventarios\n";
+        cout << "[2]. Gestion de pedidos\n";
+        cout << "[3]. Historial de reportes\n";
         cout << "[4]. Salir\n";
-        cout << "================================\n";
+        cout << "==========================================\n";
         cout << "Seleccione una opcion: ";
         cin >> opcion;
 
@@ -28,7 +28,7 @@ void menuPrincipal()
             menuInventarios(); // ir a gestión de inventarios
             break;
         case 2:
-            menuPedidos(); // ir a almacenamiento de pedidos
+            menuPedidos(); // ir a gestion de pedidos
             break;
         case 3:
             menuReportes(); // ir a historial de reportes
@@ -37,7 +37,7 @@ void menuPrincipal()
             cout << "\n=> Gracias por usar el sistema Rappi. Hasta pronto!\n\n";
             break;
         default:
-            cout << "\nOpcion invalida. Intente nuevamente.\n\n";
+            cout << "\nOpcion invalida. Intente nuevamente.\n";
         }
     } while (opcion != 4);
 }

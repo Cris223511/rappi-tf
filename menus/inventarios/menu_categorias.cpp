@@ -8,33 +8,35 @@ void menuCategorias()
     int opcion;
     do
     {
-        cout << "\n=============================\n";
-        cout << "         CATEGORIAS\n";
-        cout << "=============================\n";
-        cout << "[1]. Listar Categorias\n";
-        cout << "[2]. Agregar Categoria\n";
-        cout << "[3]. Administrar Categorias\n";
+        cout << "\n==========================================\n";
+        cout << "                CATEGORIAS\n";
+        cout << "==========================================\n";
+        cout << "[1]. Agregar categorias\n";
+        cout << "[2]. Editar categorias\n";
+        cout << "[3]. Eliminar categorias\n";
         cout << "[4]. Volver\n";
-        cout << "=============================\n";
+        cout << "==========================================\n";
         cout << "Seleccione una opcion: ";
         cin >> opcion;
+
+        cout << "\n";
 
         switch (opcion)
         {
         case 1:
-            cout << "Listando categorias...\n";
+            cout << "Agregar categorias...\n";
             break;
         case 2:
-            cout << "Agregando categoria...\n";
+            cout << "Editar categorias...\n";
             break;
         case 3:
-            cout << "Administrando categorias...\n";
+            cout << "Eliminar categorias...\n";
             break;
         case 4:
             cout << "Volviendo al menu de inventarios...\n";
             break;
         default:
-            cout << "\nOpcion invalida. Intente nuevamente.\n\n";
+            cout << "Opcion invalida. Intente nuevamente.\n";
         }
     } while (opcion != 4);
 }
