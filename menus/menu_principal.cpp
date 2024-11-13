@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unistd.h>
+#include <vector>
 #include "inventarios/menu_inventarios.cpp"
 #include "pedidos/menu_pedidos.cpp"
 #include "historial/menu_reportes.cpp"
@@ -25,7 +26,7 @@ void menuPrincipal()
         switch (opcion)
         {
         case 1:
-            menuInventarios(); // ir a gestión de inventarios
+            menuInventarios(); // ir a gestion de inventarios
             break;
         case 2:
             menuPedidos(); // ir a gestion de pedidos

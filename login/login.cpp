@@ -11,12 +11,12 @@ bool login()
 {
     string usuario, clave;
     int intentos = 0;         // contador de intentos fallidos
-    bool autenticado = false; // indicador de autenticación exitosa
+    bool autenticado = false; // indicador de autenticacion exitosa
 
     // variable para calcular el tamaño del arreglo de usuarios
     int numeroDeUsuarios = sizeof(usuarios) / sizeof(usuarios[0]);
 
-    // el bucle permite hasta 3 intentos de autenticación
+    // el bucle permite hasta 3 intentos de autenticacion
     while (intentos < 3 && !autenticado)
     {
         cout << "\n==========================================\n";
@@ -42,7 +42,7 @@ bool login()
             }
         }
 
-        // si la autenticación es exitosa, mostramos un mensaje y salimos de la función con true
+        // si la autenticacion es exitosa, mostramos un mensaje y salimos de la funcion con true
         if (autenticado)
         {
             cout << "\n=> Autenticacion exitosa. Ingresando al sistema...\n";
@@ -50,7 +50,7 @@ bool login()
         }
         else
         {
-            // si falla la autenticación, incrementamos "intentos" y mostramos un mensaje
+            // si falla la autenticacion, incrementamos "intentos" y mostramos un mensaje
             intentos++;
             cout << "\n=> Credenciales incorrectas. Intento " << intentos << " / 3\n";
         }

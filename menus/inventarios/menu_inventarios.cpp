@@ -23,7 +23,7 @@ void menuInventarios()
         switch (opcion)
         {
         case 1:
-            menuCategorias(); // ir a categorías
+            menuCategorias(); // ir a categorias
             break;
         case 2:
             menuProductos(); // ir a productos

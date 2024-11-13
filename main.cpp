@@ -8,12 +8,12 @@ int main()
 {
     if (login())
     {
-        // si el login es exitoso, se carga el menú principal
+        // si el login es exitoso, se carga el menu principal
         menuPrincipal();
     }
     else
     {
-        // si el login falla después de 3 intentos, se cierra el programa
+        // si el login falla despues de 3 intentos, se cierra el programa
         cout << "\n=> Gracias por usar el sistema Rappi. Hasta pronto!\n\n";
     }
 

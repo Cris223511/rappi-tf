@@ -1,121 +1,174 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include "../../utils/utils.cpp"
 
 using namespace std;
 
-// función para mostrar la lista de productos en formato básico
+vector<Categoria> categorias;
+vector<Producto> productos;
+
+// en esta funcion se mostrara la lista de productos junto con sus categorias
 void listarProductos()
 {
-    ifstream archivoProductos("../data/productos.txt"); // abrimos el archivo de productos en modo lectura
-    string linea; // se usará para almacenar cada línea del archivo de productos
+    cargarCategorias(categorias);
+    cargarProductos(productos);
 
-    cout << "\n==========================================\n";
-    cout << "            LISTA DE PRODUCTOS\n";
-    cout << "==========================================\n";
+    // encabezado de la tabla que mostrara los productos
+    cout << "===================================================\n";
+    cout << "                 LISTA DE PRODUCTOS\n";
+    cout << "===================================================\n";
+    cout << "idProducto | Categoria | Nombre | Precio | Stock\n";
+    cout << "---------------------------------------------------\n";
 
-    if (archivoProductos.is_open()) // verifica si el archivo se abrió correctamente
+    // se recorre cada producto para mostrarlo junto con el nombre de su categoria...
+    for (const auto &producto : productos)
     {
-        while (getline(archivoProductos, linea)) // lee cada línea del archivo
+        string nombreCategoria = "Desconocido";
+
+        // se busca el nombre de la categoria correspondiente al idCategoria del producto...
+        for (const auto &categoria : categorias)
         {
-            cout << linea << "\n"; // muestra cada línea completa, que contiene un producto
-        }
-        archivoProductos.close(); // cerramos el archivo al terminar de leerlo
-    }
-    else
-    {
-        cout << "\n=> No se pudo abrir el archivo de productos.\n"; // muestra un mensaje si no se puede abrir el archivo
-    }
-}
-
-// función para verificar si hay productos en productos.txt
-bool hayProductos()
-{
-    ifstream archivoProductos("../data/productos.txt"); // se abre el archivo de productos en modo lectura
-    bool existe = archivoProductos.good(); // verifica si el archivo existe y está accesible
-    archivoProductos.close(); // cerramos el archivo
-    return existe; // retorna verdadero si el archivo existe
-}
-
-// función para generar un nuevo ID de pedido en formato básico de cuatro dígitos
-string generarNuevoID()
-{
-    ifstream archivoPedidos("../data/pedidos.txt"); // se abre el archivo de pedidos en modo lectura
-    string linea; // variable para almacenar cada línea del archivo de pedidos
-    int maxID = 0; // almacena el ID más alto encontrado en el archivo
-
-    // en esta parte, buscamos el último ID en el archivo
-    if (archivoPedidos.is_open()) // verifica si el archivo se abrió correctamente
-    {
-        while (getline(archivoPedidos, linea)) // lee cada línea del archivo
-        {
-            // aqui se toman los primeros 4 caracteres de cada línea como ID...
-            string id = linea.substr(0, 4);
-            
-            // luego, el ID de texto se convierte en un número entero...
-            int idNum = stoi(id);
-            
-            // y al final, se compara el ID actual con el máximo ID encontrado.
-            if (idNum > maxID)
+            if (categoria.idCategoria == producto.idCategoria)
             {
-                maxID = idNum; // actualiza maxID si encontramos un ID más alto
+                nombreCategoria = categoria.nombreCategoria;
+                break; // se detiene la busqueda una vez encontrada
             }
         }
-        archivoPedidos.close(); // cierra el archivo al terminar de leerlo
-    }
 
-    // aquí incrementamos el ID en 1 y lo convertimos a un string de cuatro dígitos
-    maxID += 1;
-    string nuevoID = to_string(maxID);
-    while (nuevoID.length() < 4) // se añaden ceros a la izquierda si el ID es menor a cuatro dígitos
-    {
-        nuevoID = "0" + nuevoID;
+        // y aca muestro el producto en el formato de tabla
+        cout << "-> [" << producto.idProducto << "] | " << nombreCategoria << " | " << producto.nombre << " | " << producto.precio << " S/. | " << producto.stock << "\n";
     }
-
-    return nuevoID; // retorna el nuevo ID generado
 }
 
-// función para agregar un pedido y guardarlo en pedidos.txt
+// funcion que agrega un nuevo pedido y lo guarda en pedidos.txt
 void agregarPedido()
 {
-    // primero, validamos si hay productos en el archivo productos.txt
-    if (!hayProductos())
+    // primero se verifica que haya productos y categorias antes de agregar un pedido
+    if (!verificarArchivoContieneDatos("data/productos.txt"))
     {
-        cout << "\n=> No hay productos disponibles para realizar pedidos. Volviendo al menu principal...\n";
-        return; // si no hay productos, volvemos al menú sin realizar el pedido
+        cout << "=> No hay productos disponibles. Volviendo al menu principal...\n";
+        return;
     }
 
-    listarProductos(); // muestra la lista de productos para que el usuario pueda elegir
+    if (!verificarArchivoContieneDatos("data/categorias.txt"))
+    {
+        cout << "=> No hay categorias disponibles. Volviendo al menu principal...\n";
+        return;
+    }
 
-    string idProducto, ubicacion, cantidad; // variables para almacenar los datos del pedido
-    string nuevoID = generarNuevoID(); // genera el nuevo ID del pedido
+    // luego se muestra la lista de productos disponibles para que el usuario pueda escoger...
+    listarProductos();
+
+    string idProducto, ubicacion, cantidadStr;
+    string nuevoID = generarNuevoID("data/pedidos.txt"); // genera un nuevo ID para el pedido
+    int cantidad;
+
     cout << "\n==========================================\n";
     cout << "            AGREGAR PEDIDO\n";
     cout << "==========================================\n";
 
-    // solicita al trabajador que ingrese los datos del pedido
+    // se solicitan los datos necesarios para registrar el pedido
     cout << "=> Ingrese el ID del producto: ";
     cin >> idProducto;
-    cout << "=> Ingrese la ubicacion del cliente: ";
-    cin.ignore(); // ignoramos el salto de línea previo para getline
-    getline(cin, ubicacion); // lee toda la línea para permitir espacios en la ubicación
-    cout << "=> Ingrese la cantidad del producto: ";
-    cin >> cantidad;
 
-    // en esta parte, guardamos el pedido en el archivo pedidos.txt usando "~" como separador entre los datos
-    ofstream archivoPedidos("../data/pedidos.txt", ios::app); // se abre el archivo en modo agregar
+    // verifica si el producto existe
+    if (!verificarExisteProducto(idProducto, productos)) // aqui se pasa 'productos' como parametro
+    {
+        cout << "\n=> El producto con ID " << idProducto << " no se encontro. Volviendo al menu principal...\n";
+        return;
+    }
+
+    // busca el producto seleccionado en la lista usando memoria dinámica
+    Producto *productoSeleccionado = nullptr;
+
+    for (const auto &producto : productos)
+    {
+        if (producto.idProducto == idProducto)
+        {
+            productoSeleccionado = new Producto(producto); // se asigna un nuevo Producto en el heap
+            break;
+        }
+    }
+
+    // busca el nombre de la categoría del producto seleccionado usando memoria dinámica
+    string nombreCategoria = "Desconocido";
+    Categoria *categoriaSeleccionada = nullptr;
+
+    if (productoSeleccionado) // se verifica que el producto haya sido encontrado
+    {
+        for (const auto &categoria : categorias)
+        {
+            if (categoria.idCategoria == productoSeleccionado->idCategoria)
+            {
+                categoriaSeleccionada = new Categoria(categoria); // se asigna un nuevo Categoria en el heap
+                nombreCategoria = categoriaSeleccionada->nombreCategoria;
+                break;
+            }
+        }
+    }
+
+    cout << "=> Ingrese la ubicacion del cliente: ";
+    cin.ignore();
+    getline(cin, ubicacion);
+
+    // se solicita la cantidad...
+    cout << "=> Ingrese la cantidad del producto: ";
+    cin >> cantidadStr;
+    cantidad = stoi(cantidadStr); // convierte la cantidad de texto (string) a un numero entero (int)
+
+    // y luego valido que si la cantidad solicitada es mayor que el stock del producto elegido...
+    if (cantidad > stoi(productoSeleccionado->stock))
+    {
+        cout << "\n=> No hay suficiente stock disponible para la cantidad solicitada. Volviendo al menu principal...\n";
+        delete productoSeleccionado;  // Liberamos la memoria
+        delete categoriaSeleccionada; // Liberamos la memoria
+        return;
+    }
+
+    // calcula el total del pedido
+    float total = cantidad * stof(productoSeleccionado->precio);
+
+    // actualizo el stock del producto en el vector
+    int nuevoStock = stoi(productoSeleccionado->stock) - cantidad;
+    productoSeleccionado->stock = to_string(nuevoStock);
+
+    // actualizo el stock del producto en el archivo
+    actualizarStockEnArchivo(*productoSeleccionado, productos); // Pasamos el valor desreferenciado
+
+    // y por ultimo se guarda el pedido en el archivo con "~" como separador de cada campo
+    // usamos ios::app para añadir el pedido al final del archivo sin borrar el contenido existente
+    ofstream archivoPedidos("data/pedidos.txt", ios::app);
+
     if (archivoPedidos.is_open())
     {
-        archivoPedidos << nuevoID << "~" << idProducto << "~" << ubicacion << "~" << cantidad << "\n"; // escribe el pedido en el archivo
-        archivoPedidos.close(); // cierra el archivo después de escribir
-        cout << "\n=> Pedido agregado correctamente con ID " << nuevoID << ".\n"; // muestra un mensaje de confirmación
+        archivoPedidos << productoSeleccionado->nombre << "~" << nombreCategoria << "~" << ubicacion << "~" << cantidad << "~" << total << "\n";
+        archivoPedidos.close();
+
+        cout << "\n==========================================\n";
+
+        // muestro los detalles del producto actualizado despues de realizar el pedido
+        cout << "\n=> Pedido agregado con exito. Los detalles del pedido son:\n\n";
+
+        cout << "  -> Producto: " << productoSeleccionado->nombre << "\n";
+        cout << "  -> Categoria: " << nombreCategoria << "\n";
+        cout << "  -> Stock nuevo: " << productoSeleccionado->stock << "\n";
+        cout << "  -> Cantidad pedida: " << cantidad << "\n";
+        cout << "  -> Precio unitario: " << productoSeleccionado->precio << " S/.\n";
+        cout << "  -> Total: " << total << " S/.\n";
     }
     else
     {
-        cout << "\n=> No se pudo abrir el archivo de pedidos para guardar el pedido.\n"; // muestra un mensaje si no se puede abrir el archivo
+        cout << "\n=> No se pudo abrir el archivo de pedidos.\n";
     }
+
+    // Liberamos la memoria asignada en el heap
+    delete productoSeleccionado;
+    delete categoriaSeleccionada;
 }
 
+// menu principal para gestionar pedidos
 void menuPedidos()
 {
     int opcion;

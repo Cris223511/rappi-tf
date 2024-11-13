@@ -1,0 +1,5 @@
+0001~Bebidas~Refrescos, jugos y agua mineral
+0002~Snacks~Papas fritas, galletas y frutos secos
+0003~Lacteos~Leche, yogurt y quesos
+0004~Higiene~Jabon, shampoo y productos de cuidado personal
+0005~Abarrotes~Arroz, fideos y productos no perecibles
