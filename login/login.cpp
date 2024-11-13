@@ -50,7 +50,7 @@ bool login()
         }
         else
         {
-            // si falla la autenticación, incrementamos intentos y mostramos un mensaje
+            // si falla la autenticación, incrementamos "intentos" y mostramos un mensaje
             intentos++;
             cout << "\n=> Credenciales incorrectas. Intento " << intentos << " / 3\n";
         }
