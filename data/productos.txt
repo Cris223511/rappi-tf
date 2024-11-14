@@ -1,10 +1,10 @@
-0001~0001~Coca Cola~3.50~50
-0002~0001~Agua Mineral San Luis~1.50~100
-0003~0002~Lay's Papas Fritas~2.00~75
-0004~0002~Galletas Oreo~1.80~120
-0005~0003~Leche Gloria~3.00~200
-0006~0003~Yogurt Laive~4.50~60
-0007~0004~Shampoo Head & Shoulders~15.00~30
-0008~0004~Jabon Dove~2.20~80
-0009~0005~Arroz Costeno~5.00~150
-0010~0005~Fideos Don Vittorio~3.20~90
+0001~Bebidas~Coca Cola~3.50~48
+0002~Bebidas~Agua Mineral San Luis~1.50~100
+0003~Snacks~Lay's Papas Fritas~2.00~75
+0004~Snacks~Galletas Oreo~1.80~120
+0005~Lacteos~Leche Gloria~3.00~200
+0006~Lacteos~Yogurt Laive~4.50~60
+0007~Higiene~Shampoo Head & Shoulders~15.00~30
+0008~Higiene~Jabon Dove~2.20~80
+0009~Abarrotes~Arroz Costeno~5.00~150
+0010~Abarrotes~Fideos Don Vittorio~3.20~90

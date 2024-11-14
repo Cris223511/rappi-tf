@@ -1,4 +1,1 @@
-0001~0001~la molina lima peru~10~30
-0002~0001~lima la molina peru~10~30
-0003~0001~asdsadsa~10~35
-0004~0001~la molina lima peru~4~14
+Coca Cola~Bebidas~la molina lima peru~2~7

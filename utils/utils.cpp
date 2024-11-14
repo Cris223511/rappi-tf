@@ -22,7 +22,10 @@ struct Categoria
     string nombreCategoria;
 };
 
-// funcion para cargar productos desde el archivo en la lista de categorias
+/**
+ * Carga los productos desde el archivo y los almacena en el vector proporcionado.
+ * @param productos Referencia al vector donde se almacenarán los productos cargados.
+ */
 void cargarProductos(vector<Producto> &productos)
 {
     productos.clear(); // asegura que el vector este vacio
@@ -49,7 +52,10 @@ void cargarProductos(vector<Producto> &productos)
     archivoProductos.close();
 }
 
-// funcion para cargar categorias desde el archivo en la lista de productos
+/**
+ * Carga las categorías desde el archivo y las almacena en el vector proporcionado.
+ * @param categorias Referencia al vector donde se almacenarán las categorías cargadas.
+ */
 void cargarCategorias(vector<Categoria> &categorias)
 {
     categorias.clear(); // asegura que el vector este vacio
@@ -71,7 +77,87 @@ void cargarCategorias(vector<Categoria> &categorias)
     archivoCategorias.close();
 }
 
-// funcion para verificar si un producto existe en la lista de productos por su idProducto
+/**
+ * Lista todos los productos, incluyendo su categoría, nombre, precio y stock.
+ * Carga automáticamente los productos y categorías necesarios desde sus archivos.
+ */
+void listarProductos()
+{
+    vector<Categoria> categorias;
+    cargarCategorias(categorias);
+
+    vector<Producto> productos;
+    cargarProductos(productos);
+
+    cout << "===================================================\n";
+    cout << "                 LISTA DE PRODUCTOS\n";
+    cout << "===================================================\n";
+    cout << "idProducto | Categoria | Nombre | Precio | Stock\n";
+    cout << "---------------------------------------------------\n";
+
+    for (const auto &producto : productos)
+    {
+        string nombreCategoria = "Desconocido";
+        for (const auto &categoria : categorias)
+        {
+            if (categoria.idCategoria == producto.idCategoria)
+            {
+                nombreCategoria = categoria.nombreCategoria;
+                break;
+            }
+        }
+
+        cout << "-> [" << producto.idProducto << "] | " << nombreCategoria << " | " << producto.nombre << " | " << producto.precio << " S/. | " << producto.stock << "\n";
+    }
+}
+
+/**
+ * Lista todas las categorías con sus identificadores y nombres.
+ * Carga automáticamente las categorías desde su archivo.
+ */
+void listarCategorias()
+{
+    vector<Categoria> categorias;
+    cargarCategorias(categorias);
+
+    cout << "\n==========================================\n";
+    cout << "              LISTA DE CATEGORÍAS\n";
+    cout << "==========================================\n";
+    cout << "ID | Nombre | Descripción\n";
+    cout << "------------------------------------------\n";
+
+    for (const auto &categoria : categorias)
+    {
+        cout << "-> [" << categoria.idCategoria << "] | " << categoria.nombreCategoria << "\n";
+    }
+}
+
+/**
+ * Lista todos los pedidos desde el archivo de pedidos.
+ * Lee y muestra el contenido del archivo sin necesidad de carga previa en un vector.
+ */
+void listarPedidos()
+{
+    ifstream archivoPedidos("data/pedidos.txt");
+    string linea;
+
+    cout << "\n==========================================\n";
+    cout << "             LISTA DE PEDIDOS\n";
+    cout << "==========================================\n";
+
+    while (getline(archivoPedidos, linea))
+    {
+        cout << linea << "\n";
+    }
+    archivoPedidos.close();
+}
+
+/**
+ * Verifica si un producto existe en el vector de productos.
+ * @param idProducto ID del producto a buscar.
+ * @param productos Vector de productos donde se realizará la búsqueda.
+ * @return Verdadero si el producto existe, falso en caso contrario.
+ */
 bool verificarExisteProducto(const string &idProducto, const vector<Producto> &productos)
 {
     for (const auto &producto : productos)
@@ -84,7 +170,12 @@ bool verificarExisteProducto(const string &idProducto, const vector<Producto> &p
     return false; // el producto no fue encontrado
 }
 
-// funcion para verificar si una categoria existe en la lista de categorias por su idCategoria
+/**
+ * Verifica si una categoría existe en el vector de categorías.
+ * @param idCategoria ID de la categoría a buscar.
+ * @param categorias Vector de categorías donde se realizará la búsqueda.
+ * @return Verdadero si la categoría existe, falso en caso contrario.
+ */
 bool verificarExisteCategoria(const string &idCategoria, const vector<Categoria> &categorias)
 {
     for (const auto &categoria : categorias)
@@ -97,7 +188,11 @@ bool verificarExisteCategoria(const string &idCategoria, const vector<Categoria>
     return false; // la categoria no fue encontrada
 }
 
-// esta funcion verifica si un archivo tiene contenido
+/**
+ * Verifica si un archivo contiene datos.
+ * @param rutaArchivo Ruta del archivo a verificar.
+ * @return Verdadero si el archivo contiene datos, falso si está vacío o no existe.
+ */
 bool verificarArchivoContieneDatos(const string &rutaArchivo)
 {
     ifstream archivo(rutaArchivo);
@@ -113,7 +208,11 @@ bool verificarArchivoContieneDatos(const string &rutaArchivo)
     return false;    // retorna falso si no hay datos
 }
 
-// en esta funcion se generara un nuevo ID basado en el ID maximo de un archivo
+/**
+ * Genera un nuevo ID basado en el máximo ID existente en el archivo especificado.
+ * @param rutaArchivo Ruta del archivo donde se buscará el máximo ID.
+ * @return Un nuevo ID como string con formato de cuatro dígitos.
+ */
 string generarNuevoID(const string &rutaArchivo)
 {
     ifstream archivo(rutaArchivo);
@@ -141,7 +240,11 @@ string generarNuevoID(const string &rutaArchivo)
     return nuevoID;
 }
 
-// función que actualiza el stock de un producto en el archivo productos.txt
+/**
+ * Actualiza el stock de un producto en el archivo productos.txt.
+ * @param productoActualizado Estructura Producto con el stock actualizado.
+ * @param productos Vector de productos donde se actualizará localmente el stock.
+ */
 void actualizarStockEnArchivo(const Producto &productoActualizado, vector<Producto> &productos)
 {
     // actualiza el stock en la lista local de productos

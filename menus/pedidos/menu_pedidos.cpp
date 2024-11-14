@@ -9,43 +9,10 @@ using namespace std;
 vector<Categoria> categorias;
 vector<Producto> productos;
 
-// en esta funcion se mostrara la lista de productos junto con sus categorias
-void listarProductos()
-{
-    cargarCategorias(categorias);
-    cargarProductos(productos);
-
-    // encabezado de la tabla que mostrara los productos
-    cout << "===================================================\n";
-    cout << "                 LISTA DE PRODUCTOS\n";
-    cout << "===================================================\n";
-    cout << "idProducto | Categoria | Nombre | Precio | Stock\n";
-    cout << "---------------------------------------------------\n";
-
-    // se recorre cada producto para mostrarlo junto con el nombre de su categoria...
-    for (const auto &producto : productos)
-    {
-        string nombreCategoria = "Desconocido";
-
-        // se busca el nombre de la categoria correspondiente al idCategoria del producto...
-        for (const auto &categoria : categorias)
-        {
-            if (categoria.idCategoria == producto.idCategoria)
-            {
-                nombreCategoria = categoria.nombreCategoria;
-                break; // se detiene la busqueda una vez encontrada
-            }
-        }
-
-        // y aca muestro el producto en el formato de tabla
-        cout << "-> [" << producto.idProducto << "] | " << nombreCategoria << " | " << producto.nombre << " | " << producto.precio << " S/. | " << producto.stock << "\n";
-    }
-}
-
-// funcion que agrega un nuevo pedido y lo guarda en pedidos.txt
+// función que agrega un nuevo pedido y lo guarda en pedidos.txt
 void agregarPedido()
 {
-    // primero se verifica que haya productos y categorias antes de agregar un pedido
+    // primero se verifica que haya productos y categorías antes de agregar un pedido
     if (!verificarArchivoContieneDatos("data/productos.txt"))
     {
         cout << "=> No hay productos disponibles. Volviendo al menu principal...\n";
@@ -54,12 +21,12 @@ void agregarPedido()
 
     if (!verificarArchivoContieneDatos("data/categorias.txt"))
     {
-        cout << "=> No hay categorias disponibles. Volviendo al menu principal...\n";
+        cout << "=> No hay categorías disponibles. Volviendo al menu principal...\n";
         return;
     }
 
     // luego se muestra la lista de productos disponibles para que el usuario pueda escoger...
-    listarProductos();
+    listarProductos(); // llama a listarProductos desde utils.cpp
 
     string idProducto, ubicacion, cantidadStr;
     string nuevoID = generarNuevoID("data/pedidos.txt"); // genera un nuevo ID para el pedido
@@ -74,9 +41,9 @@ void agregarPedido()
     cin >> idProducto;
 
     // verifica si el producto existe
-    if (!verificarExisteProducto(idProducto, productos)) // aqui se pasa 'productos' como parametro
+    if (!verificarExisteProducto(idProducto, productos)) // aquí se pasa 'productos' como parámetro
     {
-        cout << "\n=> El producto con ID " << idProducto << " no se encontro. Volviendo al menu principal...\n";
+        cout << "\n=> El producto con ID " << idProducto << " no se encontró. Volviendo al menú principal...\n";
         return;
     }
 
@@ -92,38 +59,20 @@ void agregarPedido()
         }
     }
 
-    // busca el nombre de la categoría del producto seleccionado usando memoria dinámica
-    string nombreCategoria = "Desconocido";
-    Categoria *categoriaSeleccionada = nullptr;
-
-    if (productoSeleccionado) // se verifica que el producto haya sido encontrado
-    {
-        for (const auto &categoria : categorias)
-        {
-            if (categoria.idCategoria == productoSeleccionado->idCategoria)
-            {
-                categoriaSeleccionada = new Categoria(categoria); // se asigna un nuevo Categoria en el heap
-                nombreCategoria = categoriaSeleccionada->nombreCategoria;
-                break;
-            }
-        }
-    }
-
-    cout << "=> Ingrese la ubicacion del cliente: ";
+    cout << "=> Ingrese la ubicación del cliente: ";
     cin.ignore();
     getline(cin, ubicacion);
 
     // se solicita la cantidad...
     cout << "=> Ingrese la cantidad del producto: ";
     cin >> cantidadStr;
-    cantidad = stoi(cantidadStr); // convierte la cantidad de texto (string) a un numero entero (int)
+    cantidad = stoi(cantidadStr); // convierte la cantidad de texto (string) a un número entero (int)
 
-    // y luego valido que si la cantidad solicitada es mayor que el stock del producto elegido...
+    // validar si la cantidad solicitada es mayor que el stock del producto
     if (cantidad > stoi(productoSeleccionado->stock))
     {
-        cout << "\n=> No hay suficiente stock disponible para la cantidad solicitada. Volviendo al menu principal...\n";
-        delete productoSeleccionado;  // Liberamos la memoria
-        delete categoriaSeleccionada; // Liberamos la memoria
+        cout << "\n=> No hay suficiente stock disponible para la cantidad solicitada. Volviendo al menú principal...\n";
+        delete productoSeleccionado; // Liberamos la memoria
         return;
     }
 
@@ -137,22 +86,20 @@ void agregarPedido()
     // actualizo el stock del producto en el archivo
     actualizarStockEnArchivo(*productoSeleccionado, productos); // Pasamos el valor desreferenciado
 
-    // y por ultimo se guarda el pedido en el archivo con "~" como separador de cada campo
-    // usamos ios::app para añadir el pedido al final del archivo sin borrar el contenido existente
+    // y por último se guarda el pedido en el archivo con "~" como separador de cada campo
     ofstream archivoPedidos("data/pedidos.txt", ios::app);
 
     if (archivoPedidos.is_open())
     {
-        archivoPedidos << productoSeleccionado->nombre << "~" << nombreCategoria << "~" << ubicacion << "~" << cantidad << "~" << total << "\n";
+        archivoPedidos << productoSeleccionado->nombre << "~" << productoSeleccionado->idCategoria << "~" << ubicacion << "~" << cantidad << "~" << total << "\n";
         archivoPedidos.close();
 
+        // muestro los detalles del producto actualizado después de realizar el pedido
         cout << "\n==========================================\n";
-
-        // muestro los detalles del producto actualizado despues de realizar el pedido
-        cout << "\n=> Pedido agregado con exito. Los detalles del pedido son:\n\n";
+        cout << "\n=> Pedido agregado con éxito. Los detalles del pedido son:\n\n";
 
         cout << "  -> Producto: " << productoSeleccionado->nombre << "\n";
-        cout << "  -> Categoria: " << nombreCategoria << "\n";
+        cout << "  -> Categoría: " << productoSeleccionado->idCategoria << "\n";
         cout << "  -> Stock nuevo: " << productoSeleccionado->stock << "\n";
         cout << "  -> Cantidad pedida: " << cantidad << "\n";
         cout << "  -> Precio unitario: " << productoSeleccionado->precio << " S/.\n";
@@ -165,7 +112,6 @@ void agregarPedido()
 
     // Liberamos la memoria asignada en el heap
     delete productoSeleccionado;
-    delete categoriaSeleccionada;
 }
 
 // menu principal para gestionar pedidos
