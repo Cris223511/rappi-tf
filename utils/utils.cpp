@@ -9,7 +9,7 @@ using namespace std;
 struct Producto
 {
     string idProducto;
-    string idCategoria;
+    string nombreCategoria;
     string nombre;
     string precio;
     string stock;
@@ -24,7 +24,7 @@ struct Categoria
 
 /**
  * Carga los productos desde el archivo y los almacena en el vector proporcionado.
- * @param productos Referencia al vector donde se almacenarán los productos cargados.
+ * @param productos Referencia al vector donde se almacenaran los productos cargados.
  */
 void cargarProductos(vector<Producto> &productos)
 {
@@ -42,7 +42,7 @@ void cargarProductos(vector<Producto> &productos)
         int pos4 = linea.find("~", pos3 + 1);
 
         producto.idProducto = linea.substr(0, pos1);
-        producto.idCategoria = linea.substr(pos1 + 1, pos2 - pos1 - 1);
+        producto.nombreCategoria = linea.substr(pos1 + 1, pos2 - pos1 - 1); // ahora toma el nombre de la categoria
         producto.nombre = linea.substr(pos2 + 1, pos3 - pos2 - 1);
         producto.precio = linea.substr(pos3 + 1, pos4 - pos3 - 1);
         producto.stock = linea.substr(pos4 + 1);
@@ -53,8 +53,8 @@ void cargarProductos(vector<Producto> &productos)
 }
 
 /**
- * Carga las categorías desde el archivo y las almacena en el vector proporcionado.
- * @param categorias Referencia al vector donde se almacenarán las categorías cargadas.
+ * Carga las categorias desde el archivo y las almacena en el vector proporcionado.
+ * @param categorias Referencia al vector donde se almacenaran las categorias cargadas.
  */
 void cargarCategorias(vector<Categoria> &categorias)
 {
@@ -78,14 +78,11 @@ void cargarCategorias(vector<Categoria> &categorias)
 }
 
 /**
- * Lista todos los productos, incluyendo su categoría, nombre, precio y stock.
- * Carga automáticamente los productos y categorías necesarios desde sus archivos.
+ * Lista todos los productos, incluyendo su categoria, nombre, precio y stock.
+ * Carga automaticamente los productos necesarios desde sus archivos.
  */
 void listarProductos()
 {
-    vector<Categoria> categorias;
-    cargarCategorias(categorias);
-
     vector<Producto> productos;
     cargarProductos(productos);
 
@@ -97,33 +94,23 @@ void listarProductos()
 
     for (const auto &producto : productos)
     {
-        string nombreCategoria = "Desconocido";
-        for (const auto &categoria : categorias)
-        {
-            if (categoria.idCategoria == producto.idCategoria)
-            {
-                nombreCategoria = categoria.nombreCategoria;
-                break;
-            }
-        }
-
-        cout << "-> [" << producto.idProducto << "] | " << nombreCategoria << " | " << producto.nombre << " | " << producto.precio << " S/. | " << producto.stock << "\n";
+        cout << "-> [" << producto.idProducto << "] | " << producto.nombreCategoria << " | " << producto.nombre << " | " << producto.precio << " S/. | " << producto.stock << "\n";
     }
 }
 
 /**
- * Lista todas las categorías con sus identificadores y nombres.
- * Carga automáticamente las categorías desde su archivo.
+ * Lista todas las categorias con sus identificadores y nombres.
+ * Carga automaticamente las categorias desde su archivo.
  */
 void listarCategorias()
 {
     vector<Categoria> categorias;
     cargarCategorias(categorias);
 
-    cout << "\n==========================================\n";
-    cout << "              LISTA DE CATEGORÍAS\n";
     cout << "==========================================\n";
-    cout << "ID | Nombre | Descripción\n";
+    cout << "           LISTA DE CATEGORIAS\n";
+    cout << "==========================================\n";
+    cout << "idCategoria | Nombre | Descripcion\n";
     cout << "------------------------------------------\n";
 
     for (const auto &categoria : categorias)
@@ -134,28 +121,45 @@ void listarCategorias()
 
 /**
  * Lista todos los pedidos desde el archivo de pedidos.
- * Lee y muestra el contenido del archivo sin necesidad de carga previa en un vector.
+ * Lee y muestra el contenido del archivo y formatea cada pedido en una tabla para mejor legibilidad.
  */
 void listarPedidos()
 {
     ifstream archivoPedidos("data/pedidos.txt");
     string linea;
 
-    cout << "\n==========================================\n";
-    cout << "             LISTA DE PEDIDOS\n";
-    cout << "==========================================\n";
+    cout << "===============================================================\n";
+    cout << "                       LISTA DE PEDIDOS\n";
+    cout << "===============================================================\n";
+    cout << "idPedido | Producto | Categoria | Ubicacion | Cantidad | Total\n";
+    cout << "---------------------------------------------------------------\n";
 
     while (getline(archivoPedidos, linea))
     {
-        cout << linea << "\n";
+        int pos1 = linea.find("~");
+        int pos2 = linea.find("~", pos1 + 1);
+        int pos3 = linea.find("~", pos2 + 1);
+        int pos4 = linea.find("~", pos3 + 1);
+        int pos5 = linea.find("~", pos4 + 1);
+
+        // Extrae los datos del pedido en base a sus delimitadores "~"
+        string idPedido = linea.substr(0, pos1);
+        string nombreProducto = linea.substr(pos1 + 1, pos2 - pos1 - 1);
+        string nombreCategoria = linea.substr(pos2 + 1, pos3 - pos2 - 1);
+        string ubicacion = linea.substr(pos3 + 1, pos4 - pos3 - 1);
+        string cantidad = linea.substr(pos4 + 1, pos5 - pos4 - 1);
+        string total = linea.substr(pos5 + 1);
+
+        cout << "-> [" << idPedido << "] | " << nombreProducto << " | " << nombreCategoria << " | " << ubicacion << " | " << cantidad << " | " << total << " S/.\n";
     }
+
     archivoPedidos.close();
 }
 
 /**
  * Verifica si un producto existe en el vector de productos.
  * @param idProducto ID del producto a buscar.
- * @param productos Vector de productos donde se realizará la búsqueda.
+ * @param productos Vector de productos donde se realizara la busqueda.
  * @return Verdadero si el producto existe, falso en caso contrario.
  */
 bool verificarExisteProducto(const string &idProducto, const vector<Producto> &productos)
@@ -171,10 +175,10 @@ bool verificarExisteProducto(const string &idProducto, const vector<Producto> &p
 }
 
 /**
- * Verifica si una categoría existe en el vector de categorías.
- * @param idCategoria ID de la categoría a buscar.
- * @param categorias Vector de categorías donde se realizará la búsqueda.
- * @return Verdadero si la categoría existe, falso en caso contrario.
+ * Verifica si una categoria existe en el vector de categorias.
+ * @param idCategoria ID de la categoria a buscar.
+ * @param categorias Vector de categorias donde se realizara la busqueda.
+ * @return Verdadero si la categoria existe, falso en caso contrario.
  */
 bool verificarExisteCategoria(const string &idCategoria, const vector<Categoria> &categorias)
 {
@@ -191,7 +195,7 @@ bool verificarExisteCategoria(const string &idCategoria, const vector<Categoria>
 /**
  * Verifica si un archivo contiene datos.
  * @param rutaArchivo Ruta del archivo a verificar.
- * @return Verdadero si el archivo contiene datos, falso si está vacío o no existe.
+ * @return Verdadero si el archivo contiene datos, falso si esta vacio o no existe.
  */
 bool verificarArchivoContieneDatos(const string &rutaArchivo)
 {
@@ -209,9 +213,9 @@ bool verificarArchivoContieneDatos(const string &rutaArchivo)
 }
 
 /**
- * Genera un nuevo ID basado en el máximo ID existente en el archivo especificado.
- * @param rutaArchivo Ruta del archivo donde se buscará el máximo ID.
- * @return Un nuevo ID como string con formato de cuatro dígitos.
+ * Genera un nuevo ID basado en el maximo ID existente en el archivo especificado.
+ * @param rutaArchivo Ruta del archivo donde se buscara el maximo ID.
+ * @return Un nuevo ID como string con formato de cuatro digitos.
  */
 string generarNuevoID(const string &rutaArchivo)
 {
@@ -243,11 +247,11 @@ string generarNuevoID(const string &rutaArchivo)
 /**
  * Actualiza el stock de un producto en el archivo productos.txt.
  * @param productoActualizado Estructura Producto con el stock actualizado.
- * @param productos Vector de productos donde se actualizará localmente el stock.
+ * @param productos Vector de productos donde se actualizara localmente el stock.
  */
 void actualizarStockEnArchivo(const Producto &productoActualizado, vector<Producto> &productos)
 {
-    // actualiza el stock en la lista local de productos
+    // Actualiza el stock en la lista local de productos
     for (auto &producto : productos)
     {
         if (producto.idProducto == productoActualizado.idProducto)
@@ -257,14 +261,13 @@ void actualizarStockEnArchivo(const Producto &productoActualizado, vector<Produc
         }
     }
 
-    // abre el archivo en modo de escritura para sobrescribirlo con el stock actualizado
+    // Abre el archivo en modo de escritura para sobrescribirlo con el stock actualizado
     ofstream archivoProductos("data/productos.txt");
     if (archivoProductos.is_open())
     {
         for (const auto &producto : productos)
         {
-            archivoProductos << producto.idProducto << "~" << producto.idCategoria << "~"
-                             << producto.nombre << "~" << producto.precio << "~" << producto.stock << "\n";
+            archivoProductos << producto.idProducto << "~" << producto.nombreCategoria << "~" << producto.nombre << "~" << producto.precio << "~" << producto.stock << "\n";
         }
         archivoProductos.close();
     }

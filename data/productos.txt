@@ -1,7 +1,7 @@
 0001~Bebidas~Coca Cola~3.50~48
-0002~Bebidas~Agua Mineral San Luis~1.50~100
-0003~Snacks~Lay's Papas Fritas~2.00~75
-0004~Snacks~Galletas Oreo~1.80~120
+0002~Bebidas~Agua Mineral San Luis~1.50~80
+0003~Snacks~Lay's Papas Fritas~2.00~55
+0004~Snacks~Galletas Oreo~1.80~110
 0005~Lacteos~Leche Gloria~3.00~200
 0006~Lacteos~Yogurt Laive~4.50~60
 0007~Higiene~Shampoo Head & Shoulders~15.00~30
