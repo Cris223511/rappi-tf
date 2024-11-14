@@ -8,9 +8,15 @@
 
 using namespace std;
 
+vector<Categoria> categorias;
+
 // funcion que agrega un nuevo producto y lo guarda en productos.txt
 void agregarProducto()
 {
+
+    // cargo las categorias antes de continuar
+    cargarCategorias(categorias);
+
     // aca verifico si existen categorias
     if (!verificarArchivoContieneDatos("data/categorias.txt"))
     {
@@ -21,16 +27,36 @@ void agregarProducto()
     // muestro las categorias disponibles
     listarCategorias();
 
+    string idCategoria;
     Producto nuevoProducto;
 
-    cout << "==========================================\n";
+    cout << "\n==========================================\n";
     cout << "            AGREGAR PRODUCTO\n";
     cout << "==========================================\n";
 
-    // solicito los datos necesarios para registrar el producto
+    // solicito el ID de la categoría y luego buscaré el nombre de la categoría correspondiente
     cout << "=> Ingrese el ID de la categoria del producto: ";
-    cin >> nuevoProducto.nombreCategoria;
+    cin >> idCategoria;
 
+    bool categoriaEncontrada = false;
+
+    for (const auto &categoria : categorias)
+    {
+        if (categoria.idCategoria == idCategoria)
+        {
+            nuevoProducto.nombreCategoria = categoria.nombreCategoria; // asigno el nombre de la categoría
+            categoriaEncontrada = true;
+            break;
+        }
+    }
+
+    if (!categoriaEncontrada)
+    {
+        cout << "\n=> La categoria con ID " << idCategoria << " no se encontro. Volviendo al menu principal...\n";
+        return;
+    }
+
+    // solicito los demás datos necesarios para registrar el producto
     cout << "=> Ingrese el nombre del producto: ";
     cin.ignore();
     getline(cin, nuevoProducto.nombre);
@@ -41,16 +67,16 @@ void agregarProducto()
     cout << "=> Ingrese el stock del producto: ";
     cin >> nuevoProducto.stock;
 
-    // aca genero un nuevo ID de producto correlativo
+    // genero un nuevo ID de producto correlativo
     nuevoProducto.idProducto = generarNuevoID("data/productos.txt");
 
-    // y por ultimo se guarda el producto en el archivo con "~" como separador de cada campo
-    // usamos ios::app para añadir el producto al final del archivo sin borrar el contenido existente
+    // guardo el producto en el archivo con "~" como separador de cada campo
     ofstream archivoProductos("data/productos.txt", ios::app);
 
     if (archivoProductos.is_open())
     {
-        archivoProductos << nuevoProducto.idProducto << "~" << nuevoProducto.nombreCategoria << "~" << nuevoProducto.nombre << "~" << nuevoProducto.precio << "~" << nuevoProducto.stock << "\n";
+        archivoProductos << nuevoProducto.idProducto << "~" << nuevoProducto.nombreCategoria << "~"
+                         << nuevoProducto.nombre << "~" << nuevoProducto.precio << "~" << nuevoProducto.stock << "\n";
         archivoProductos.close();
 
         cout << "\n=> Producto agregado con exito.\n";
@@ -64,6 +90,7 @@ void agregarProducto()
 // funcion para editar los detalles de un producto existente
 void editarProducto()
 {
+    // verifico si hay productos en el archivo
     if (!verificarArchivoContieneDatos("data/productos.txt"))
     {
         cout << "=> No hay productos disponibles. Volviendo al menu principal...\n";
@@ -115,8 +142,27 @@ void editarProducto()
             cout << "=> Ingrese el nuevo stock del producto: ";
             cin >> stock;
 
+            // muestra las categorías antes de solicitar la nueva categoría
+            listarCategorias();
             cout << "=> Ingrese la nueva categoria del producto (ID existente): ";
             cin >> categoria;
+
+            // verifico si la categoria ingresada existe
+            bool categoriaValida = false;
+            for (const auto &cat : categorias)
+            {
+                if (cat.idCategoria == categoria)
+                {
+                    categoriaValida = true;
+                    break;
+                }
+            }
+
+            if (!categoriaValida)
+            {
+                cout << "\n=> La categoria con ID " << categoria << " no se encontro. Volviendo al menu principal...\n";
+                return;
+            }
 
             // actualiza la linea con los datos modificados
             linea = idProducto + "~" + categoria + "~" + nombre + "~" + precio + "~" + stock;
