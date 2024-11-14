@@ -20,6 +20,7 @@ struct Categoria
 {
     string idCategoria;
     string nombreCategoria;
+    string descripcion;
 };
 
 /**
@@ -71,6 +72,7 @@ void cargarCategorias(vector<Categoria> &categorias)
 
         categoria.idCategoria = linea.substr(0, pos1);
         categoria.nombreCategoria = linea.substr(pos1 + 1, pos2 - pos1 - 1);
+        categoria.descripcion = linea.substr(pos2 + 1); // toma la descripcion de la categoria
 
         categorias.push_back(categoria); // añade la categoria al vector
     }
@@ -99,7 +101,7 @@ void listarProductos()
 }
 
 /**
- * Lista todas las categorias con sus identificadores y nombres.
+ * Lista todas las categorias con sus identificadores, nombres y descripciones.
  * Carga automaticamente las categorias desde su archivo.
  */
 void listarCategorias()
@@ -115,7 +117,7 @@ void listarCategorias()
 
     for (const auto &categoria : categorias)
     {
-        cout << "-> [" << categoria.idCategoria << "] | " << categoria.nombreCategoria << "\n";
+        cout << "-> [" << categoria.idCategoria << "] | " << categoria.nombreCategoria << " | " << categoria.descripcion << "\n";
     }
 }
 

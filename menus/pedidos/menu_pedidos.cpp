@@ -4,49 +4,47 @@
 #include <vector>
 #include <iomanip>
 #include <sstream>
-#include "../../utils/utils.cpp"
 
 using namespace std;
 
-vector<Categoria> categorias;
 vector<Producto> productos;
 
 // funcion que agrega un nuevo pedido y lo guarda en pedidos.txt
 void agregarPedido()
 {
-    // Carga los productos antes de continuar
+    // cargo los productos antes de continuar
     cargarProductos(productos);
 
-    // Verifica si hay productos y categorias antes de agregar un pedido
+    // aca verifico si hay productos y antes de agregar un pedido
     if (!verificarArchivoContieneDatos("data/productos.txt"))
     {
         cout << "=> No hay productos disponibles. Volviendo al menu principal...\n";
         return;
     }
 
-    // Muestra la lista de productos disponibles para que el usuario pueda escoger
+    // muestra la lista de productos disponibles para que el usuario pueda escoger
     listarProductos();
 
     string idProducto, ubicacion, cantidadStr;
-    string nuevoID = generarNuevoID("data/pedidos.txt"); // genera un nuevo ID para el pedido
+    string nuevoID = generarNuevoID("data/pedidos.txt"); // genera un nuevo ID correlativo para el pedido
     int cantidad;
 
     cout << "\n==========================================\n";
     cout << "            AGREGAR PEDIDO\n";
     cout << "==========================================\n";
 
-    // Solicita los datos necesarios para registrar el pedido
+    // solicitamos los datos necesarios para registrar el pedido
     cout << "=> Ingrese el ID del producto: ";
     cin >> idProducto;
 
-    // Verifica si el producto existe
+    // hacemos la verificacion de que si el producto existe
     if (!verificarExisteProducto(idProducto, productos))
     {
         cout << "\n=> El producto con ID " << idProducto << " no se encontro. Volviendo al menu principal...\n";
         return;
     }
 
-    // Busca el producto seleccionado en la lista usando memoria dinamica
+    // busca el producto seleccionado en la lista usando memoria dinamica
     Producto *productoSeleccionado = nullptr;
 
     for (const auto &producto : productos)
@@ -62,7 +60,6 @@ void agregarPedido()
     cin.ignore();
     getline(cin, ubicacion);
 
-    // Solicita la cantidad y la valida
     cout << "=> Ingrese la cantidad del producto: ";
     cin >> cantidadStr;
     cantidad = stoi(cantidadStr);
@@ -74,28 +71,26 @@ void agregarPedido()
         return;
     }
 
-    // Calcula el total del pedido y lo formatea a dos decimales
+    // ahora a calcular el total del pedido y lo formatea a dos decimales
     float total = cantidad * stof(productoSeleccionado->precio);
     ostringstream streamTotal;
     streamTotal << fixed << setprecision(2) << total;
 
-    // Actualiza el stock en el vector y archivo
+    // y actualizamos el stock en el vector y en el archivo correspondiente
     int nuevoStock = stoi(productoSeleccionado->stock) - cantidad;
     productoSeleccionado->stock = to_string(nuevoStock);
     actualizarStockEnArchivo(*productoSeleccionado, productos);
 
-    // Guarda el pedido en el archivo con "~" como separador
+    // y por ultimo se guarda el pedido en el archivo con "~" como separador de cada campo
+    // usamos ios::app para añadir el pedido al final del archivo sin borrar el contenido existente
     ofstream archivoPedidos("data/pedidos.txt", ios::app);
 
     if (archivoPedidos.is_open())
     {
-        archivoPedidos << nuevoID << "~" << productoSeleccionado->nombre << "~"
-                       << productoSeleccionado->nombreCategoria << "~"
-                       << ubicacion << "~" << cantidad << "~"
-                       << streamTotal.str() << "\n";
+        archivoPedidos << nuevoID << "~" << productoSeleccionado->nombre << "~" << productoSeleccionado->nombreCategoria << "~" << ubicacion << "~" << cantidad << "~" << streamTotal.str() << "\n";
         archivoPedidos.close();
 
-        // Muestra los detalles del producto actualizado despues de realizar el pedido
+        // muestra los detalles del producto actualizado despues de realizar el pedido
         cout << "\n==========================================\n";
         cout << "\n=> Pedido agregado con exito. Los detalles del pedido son:\n\n";
 
@@ -111,11 +106,11 @@ void agregarPedido()
         cout << "\n=> No se pudo abrir el archivo de pedidos.\n";
     }
 
-    // Liberamos la memoria asignada en el heap
+    // liberamos la memoria asignada en el heap
     delete productoSeleccionado;
 }
 
-// Funcion que permite editar un pedido en el archivo pedidos.txt
+// funcion que permite editar un pedido en el archivo pedidos.txt
 void editarPedido()
 {
     if (!verificarArchivoContieneDatos("data/pedidos.txt"))
@@ -172,27 +167,28 @@ void editarPedido()
             int cantidad = stoi(cantidadStr);
             float precio = stof(totalStr) / cantidad; // Reconstruye el precio unitario
 
-            // Calcula el nuevo total con la nueva cantidad
+            // calcula el nuevo total con la nueva cantidad
             float nuevoTotal = nuevaCantidad * precio;
 
-            // Formatear el total con dos decimales
+            // formateo el total con dos decimales
             ostringstream streamTotal;
             streamTotal << fixed << setprecision(2) << nuevoTotal;
 
-            // Actualiza la linea con los nuevos datos
+            // y aca actualiza la linea con los nuevos datos
             linea = idPedido + "~" + nombreProducto + "~" + nombreCategoria + "~" + nuevaUbicacion + "~" + to_string(nuevaCantidad) + "~" + streamTotal.str();
         }
         pedidos.push_back(linea);
     }
     archivoPedidos.close();
 
+    // si no encontro el pedido...
     if (!pedidoEncontrado)
     {
         cout << "\n=> El pedido con ID " << idPedido << " no se encontro. Volviendo al menu principal...\n";
         return;
     }
 
-    // Sobreescribe el archivo con los pedidos actualizados
+    // si todo ok, sobreescribe el archivo con los pedidos actualizados
     ofstream archivoPedidosOut("data/pedidos.txt");
     for (const string &pedido : pedidos)
     {
@@ -200,7 +196,7 @@ void editarPedido()
     }
     archivoPedidosOut.close();
 
-    // Muestra los detalles del pedido actualizado
+    // muestra los detalles del pedido actualizado
     cout << "\n==========================================\n";
     cout << "\n=> Pedido editado con exito. Los detalles del pedido actualizado son:\n\n";
     cout << "  -> Producto: " << nombreProducto << "\n";
@@ -214,14 +210,14 @@ void editarPedido()
 // funcion que permite eliminar un pedido existente en el archivo pedidos.txt
 void eliminarPedido()
 {
-    // Verifica si hay pedidos en el archivo
+    // verifica si hay pedidos en el archivo
     if (!verificarArchivoContieneDatos("data/pedidos.txt"))
     {
         cout << "=> No hay pedidos disponibles. Volviendo al menu principal...\n";
         return;
     }
 
-    // Lista los pedidos para que el usuario vea cual desea eliminar
+    // lista los pedidos para que el usuario vea cual desea eliminar
     listarPedidos();
 
     string idPedido;
@@ -230,11 +226,11 @@ void eliminarPedido()
     cout << "             ELIMINAR PEDIDO\n";
     cout << "==========================================\n";
 
-    // Solicita el ID del pedido a eliminar
+    // solicito el ID del pedido a eliminar
     cout << "=> Ingrese el ID del pedido que desea eliminar: ";
     cin >> idPedido;
 
-    // Abre el archivo de pedidos para leer y almacenar los datos temporalmente
+    // abro el archivo de pedidos para leer y almacenar los datos temporalmente
     ifstream archivoPedidos("data/pedidos.txt");
     vector<string> pedidosActualizados;
     string linea;
@@ -242,30 +238,30 @@ void eliminarPedido()
 
     while (getline(archivoPedidos, linea))
     {
-        // Extrae el ID del pedido actual en la linea
+        // extraigo el ID del pedido actual en la linea
         string idActual = linea.substr(0, linea.find("~"));
 
         if (idActual == idPedido)
         {
             encontrado = true; // marca el pedido como encontrado para eliminarlo
             cout << "\n=> Pedido con ID " << idPedido << " eliminado con exito.\n";
-            // No se agrega a pedidosActualizados, por lo que sera eliminado
         }
         else
         {
-            // Guarda la linea sin cambios si no coincide el ID
+            // guarda la linea sin cambios si no coincide el ID
             pedidosActualizados.push_back(linea);
         }
     }
     archivoPedidos.close();
 
+    // si no encontro el pedido...
     if (!encontrado)
     {
         cout << "\n=> El pedido con ID " << idPedido << " no se encontro. Volviendo al menu principal...\n";
         return;
     }
 
-    // Sobrescribe el archivo con los pedidos actualizados
+    // si todo ok, entonces sobreescribe el archivo con los pedidos actualizados
     ofstream archivoPedidosSalida("data/pedidos.txt");
     for (const auto &pedido : pedidosActualizados)
     {

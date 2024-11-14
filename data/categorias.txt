@@ -3,3 +3,5 @@
 0003~Lacteos~Leche, yogurt y quesos
 0004~Higiene~Jabon, shampoo y productos de cuidado personal
 0005~Abarrotes~Arroz, fideos y productos no perecibles
+0006~tecnologia~categoria para los productos tecnologicos
+0007~asdasd~asdasddsdd
