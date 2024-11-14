@@ -1,6 +1,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <vector>
+#include "../utils/utils.cpp"
 #include "inventarios/menu_inventarios.cpp"
 #include "pedidos/menu_pedidos.cpp"
 #include "historial/menu_reportes.cpp"
