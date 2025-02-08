@@ -1,17 +1,25 @@
-<p align="center">
-  <h2 align="center">Rappi</h2>
-</p>
+<i>
+    <h2 align="center">Rappi Inventory System</h2>
+    <p align="center">An inventory and order management system developed in C++.</p>
+</i>
 
 <i>
-    <p align="center">
-        This repository contains a robust inventory and order management system developed in C++. 
-        Designed with a structured and modular approach, it incorporates object-oriented programming (OOP) principles, 
-        ensuring maintainability and scalability. The system facilitates efficient management of products, categories, and orders, 
-        utilizing structured text files for data storage. Additionally, it includes authentication mechanisms, 
-        utility functions for data validation, and automated ID generation to streamline operations. 
-        Built with flexibility in mind, this project is intended to optimize inventory tracking and order processing 
-        for delivery services such as Rappi in Peru.
-    </p>
+  <p align="justify">
+  What is this project about?
+  
+  This repository contains a structured inventory and order management system developed in C++. 
+  It is designed to handle products, categories, and orders efficiently using object-oriented programming principles. 
+  The system stores data in structured text files and includes authentication, validation utilities, and automated ID generation.
+  
+  Key features:
+  
+  - File-based storage for managing inventory and orders.
+  - Modular structure following object-oriented programming.
+  - Authentication and validation to ensure data integrity.
+  - Automated ID generation for product and order tracking.
+  
+  This system is optimized for businesses requiring an efficient inventory and order management solution.
+  </p>
 </i>
 
 ---
