@@ -8,17 +8,18 @@
   What is this project about?
   
   This repository contains a structured inventory and order management system developed in C++. 
-  It is designed to handle products, categories, and orders efficiently using object-oriented programming principles. 
-  The system stores data in structured text files and includes authentication, validation utilities, and automated ID generation.
+  It efficiently handles products, categories, and orders using object-oriented programming principles. 
+  The system features **user authentication**, file-based data storage, and automated ID generation.
   
   Key features:
   
+  - User login system for secure access.
   - File-based storage for managing inventory and orders.
   - Modular structure following object-oriented programming.
-  - Authentication and validation to ensure data integrity.
+  - Data validation to prevent input errors.
   - Automated ID generation for product and order tracking.
   
-  This system is optimized for businesses requiring an efficient inventory and order management solution.
+  This system is designed to optimize inventory and order management for businesses requiring an efficient and scalable solution.
   </p>
 </i>
 
