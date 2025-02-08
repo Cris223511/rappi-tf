@@ -5,9 +5,13 @@
 
 <i>
     <p align="center">
-        This repository contains a comprehensive inventory and order management system developed in C++. 
-        It includes features for managing products, categories, and orders, leveraging object-oriented programming (OOP) principles, 
-        file handling, authentication, and utility functions. 
+        This repository contains a robust inventory and order management system developed in C++. 
+        Designed with a structured and modular approach, it incorporates object-oriented programming (OOP) principles, 
+        ensuring maintainability and scalability. The system facilitates efficient management of products, categories, and orders, 
+        utilizing structured text files for data storage. Additionally, it includes authentication mechanisms, 
+        utility functions for data validation, and automated ID generation to streamline operations. 
+        Built with flexibility in mind, this project is intended to optimize inventory tracking and order processing 
+        for delivery services such as Rappi in Peru.
     </p>
 </i>
 
